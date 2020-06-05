@@ -187,19 +187,6 @@ EOF
     echo "icuinfo 2>/dev/null|grep \"version\"|sed 's/.*>\(.*\)<.*/\1/g'" > /usr/bin/icu-config
     chmod +x /usr/bin/icu-config
     silent fwconsole ma downloadinstall ucp
-    if [[ "$ENABLE_XMPP" = "TRUE" ]] || [[ "$ENABLE_XMPP" = "true" ]];  then
-      print_notice "Starting MongoDB temporarily"
-      mkdir -p /data/var/lib/mongodb
-      mkdir -p /var/log/mongodb
-      touch /var/log/mongodb/mongodb.log
-      chown -R 777 /var/log/mongodb/mongodb.log
-      mongod --unixSocketPrefix=/var/run/mongodb --config /etc/mongodb.conf run &
-      print_notice "Module Install: xmpp"
-      check_process
-      silent fwconsole ma downloadinstall xmpp
-      print_notice "Stopping MongoDB"
-      silent mongod --unixSocketPrefix=/var/run/mongodb --config /etc/mongodb.conf --shutdown
-    fi
     if [[ -v INSTALL_ADDITIONAL_MODULES ]] ; then
       print_notice "Attempting to Install additional FreePBX Modules '${INSTALL_ADDITIONAL_MODULES}'"
       modules=$(echo ${INSTALL_ADDITIONAL_MODULES} | tr "," "\n")

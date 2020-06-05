@@ -121,7 +121,6 @@ Along with the Environment Variables from the [Base image](https://hub.docker.co
 | `ENABLE_FAIL2BAN` | Enable Fail2ban to block the bad guys - Default `TRUE`|
 | `ENABLE_FOP` | Enable Flash Operator Panel - Default `TRUE` |
 | `ENABLE_SSL` | Enable HTTPd to serve SSL requests - Default `FALSE`|
-| `ENABLE_XMPP` | Enable XMPP Module with MongoDB - Default `FALSE` |
 | `FOP_DIRECTORY` | What folder to access FOP - Default `/fop`
 | `HTTP_PORT`  | HTTP Listening Port - Default `80` |
 | `HTTPS_PORT`  | HTTPS Listening Port - Default `443` |
