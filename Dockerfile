@@ -111,7 +111,7 @@ RUN \
                     xmlstarlet \
                     && \
     \
-+### Install Legacy MySQL ODBC Connector
+### Install Legacy MySQL ODBC Connector
     printf "Package: *\nPin: release n=stretch\nPin-Priority: 900\nPackage: *\nPin: release n=jessie\nPin-Priority: 100" >> /etc/apt/preferences.d/jessie && \
 #    echo "deb http://mirrordirector.raspbian.org/raspbian/ jessie main contrib" >> /etc/apt/sources.list && \
     echo "deb http://raspbian.mirror.constant.com/raspbian/ jessie main contrib" >> /etc/apt/sources.list && \
