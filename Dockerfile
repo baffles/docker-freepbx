@@ -1,10 +1,11 @@
-FROM tiredofit/nodejs:10-debian-latest
-LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
+FROM arm32v7/node:10-buster
+LABEL maintainer="Robert Ferris (https://www.github.com/baffles/)"
+
+ENV DEBIAN_FRONTEND noninteractive
 
 ### Set Defaults
-ENV ASTERISK_VERSION=16.9.0 \
-    FREEPBX_VERSION=15.0.16.45 \
-    MARIAODBC_VERSION=2.0.19 \
+ENV ASTERISK_VERSION=16.10.0 \
+    FREEPBX_VERSION=15.0.16.55 \
     BCG729_VERSION=1.0.4 \
     SPANDSP_VERSION=20180108 \
     DB_EMBEDDED=TRUE \
@@ -19,8 +20,6 @@ RUN echo "Package: libxml2*" > /etc/apt/preferences.d/libxml2 && \
 RUN set -x && \
     curl https://packages.sury.org/php/apt.gpg | apt-key add - && \
     echo "deb https://packages.sury.org/php/ buster main" > /etc/apt/sources.list.d/deb.sury.org.list && \
-    curl https://www.mongodb.org/static/pgp/server-4.2.asc | apt-key add - && \
-    echo "deb http://repo.mongodb.org/apt/debian buster/mongodb-org/4.2 main" > /etc/apt/sources.list.d/mongodb-org.list && \
     apt-get update  && \
     apt-get -o Dpkg::Options::="--force-confold" upgrade -y && \
     \
@@ -53,7 +52,6 @@ RUN set -x && \
                         libtool-bin \
                         libvorbis-dev \
                         libxml2-dev \
-                        linux-headers-amd64 \
                         python-dev \
                         subversion \
                         unixodbc-dev \
@@ -80,7 +78,6 @@ RUN set -x && \
                     locales-all \
                     mariadb-client \
                     mariadb-server \
-                    mongodb-org \
                     mpg123 \
                     php5.6 \
                     php5.6-cli \
@@ -108,12 +105,16 @@ RUN set -x && \
                     xmlstarlet \
                     && \
     \
-### Install MariaDB ODBC Connector
-    cd /usr/src && \
-    mkdir -p mariadb-connector && \
-    curl -sSL  https://downloads.mariadb.com/Connectors/odbc/connector-odbc-${MARIAODBC_VERSION}/mariadb-connector-odbc-${MARIAODBC_VERSION}-ga-debian-x86_64.tar.gz | tar xvfz - -C /usr/src/mariadb-connector && \
-    cp mariadb-connector/lib/libmaodbc.so /usr/lib/x86_64-linux-gnu/odbc/ && \
-    \
++### Install Legacy MySQL ODBC Connector
+    printf "Package: *\nPin: release n=stretch\nPin-Priority: 900\nPackage: *\nPin: release n=jessie\nPin-Priority: 100" >> /etc/apt/preferences.d/jessie && \
+#    echo "deb http://mirrordirector.raspbian.org/raspbian/ jessie main contrib" >> /etc/apt/sources.list && \
+    echo "deb http://raspbian.mirror.constant.com/raspbian/ jessie main contrib" >> /etc/apt/sources.list && \
+    curl -s http://archive.raspbian.org/raspbian.public.key | apt-key add - && \
+    apt-get update && \
+    apt-get -y --allow-unauthenticated install libmyodbc && \
+    sed '$d' /etc/apt/sources.list > /etc/apt/sources.list && \
+    rm /etc/apt/preferences.d/jessie && \
+    apt-get update && \
 ### Add Users
     addgroup --gid 2600 asterisk && \
     adduser --uid 2600 --gid 2600 --gecos "Asterisk User" --disabled-password asterisk && \
@@ -164,11 +165,11 @@ RUN set -x && \
     curl https://bitbucket.org/arkadi/asterisk-g72x/get/master.tar.gz | tar xvfz - --strip 1 -C /usr/src/asterisk-g72x && \
     cd /usr/src/asterisk-g72x && \
     ./autogen.sh && \
-    ./configure --with-bcg729 --enable-penryn && \
+    ./configure CFLAGS='-march=armv7' --with-bcg729 --with-asterisk160 --enable-penryn && \
     make && \
     make install && \
     \
-### Cleanup 
+### Cleanup
     mkdir -p /var/run/fail2ban && \
     cd / && \
     rm -rf /usr/src/* /tmp/* /etc/cron* && \
@@ -205,9 +206,6 @@ RUN set -x && \
     mkdir -p /assets/config/var/spool && \
     mv /var/spool/cron /assets/config/var/spool/ && \
     ln -s /data/var/spool/cron /var/spool/cron && \
-    mkdir -p /var/run/mongodb && \
-    rm -rf /var/lib/mongodb && \
-    ln -s /data/var/lib/mongodb /var/lib/mongodb && \
     ln -s /data/var/run/asterisk /var/run/asterisk && \
     rm -rf /var/spool/asterisk && \
     ln -s /data/var/spool/asterisk /var/spool/asterisk && \
