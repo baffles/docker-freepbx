@@ -204,6 +204,7 @@ RUN set -x && \
     mv /var/run/asterisk /assets/config/var/run/ && \
     mv /var/lib/mysql /assets/config/var/lib/ && \
     mkdir -p /assets/config/var/spool && \
+    mkdir -p /var/spool/cron && \
     mv /var/spool/cron /assets/config/var/spool/ && \
     ln -s /data/var/spool/cron /var/spool/cron && \
     ln -s /data/var/run/asterisk /var/run/asterisk && \
