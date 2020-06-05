@@ -19,8 +19,6 @@ RUN echo "Package: libxml2*" > /etc/apt/preferences.d/libxml2 && \
     echo "Pin-Priority: 501" >> /etc/apt/preferences.d/libxml2
 
 RUN \
-### S6 Overlay
-    curl -sSL https://github.com/just-containers/s6-overlay/releases/download/${S6_OVERLAY_VERSION}/s6-overlay-armhf.tar.gz | tar xfz - --strip 0 -C / && \
 ### Install Dependencies
     set -x && \
     curl https://packages.sury.org/php/apt.gpg | apt-key add - && \
@@ -114,6 +112,8 @@ RUN \
                     xmlstarlet \
                     && \
     \
+### S6 Overlay
+    curl -sSL https://github.com/just-containers/s6-overlay/releases/download/${S6_OVERLAY_VERSION}/s6-overlay-armhf.tar.gz | tar xfz - --strip 0 -C / && \
 ### Install Legacy MySQL ODBC Connector
     printf "Package: *\nPin: release n=stretch\nPin-Priority: 900\nPackage: *\nPin: release n=jessie\nPin-Priority: 100" >> /etc/apt/preferences.d/jessie && \
 #    echo "deb http://mirrordirector.raspbian.org/raspbian/ jessie main contrib" >> /etc/apt/sources.list && \
