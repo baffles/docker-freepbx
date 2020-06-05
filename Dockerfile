@@ -28,6 +28,7 @@ RUN \
 		bash \
         ca-certificates \
         curl \
+        gnupg \
         && \
 ### S6 Overlay
     curl -sSL https://github.com/just-containers/s6-overlay/releases/download/${S6_OVERLAY_VERSION}/s6-overlay-armhf.tar.gz | tar xfz - --strip 0 -C / && \
