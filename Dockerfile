@@ -1,10 +1,12 @@
-FROM arm32v7/node:10-buster
+FROM debian:buster
 LABEL maintainer="Robert Ferris (https://www.github.com/baffles/)"
 
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive \
+    TERM=xterm
 
 ### Set Defaults
-ENV ASTERISK_VERSION=16.10.0 \
+ENV S6_OVERLAY_VERSION=v1.22.1.0 \
+    ASTERISK_VERSION=16.10.0 \
     FREEPBX_VERSION=15.0.16.55 \
     BCG729_VERSION=1.0.4 \
     SPANDSP_VERSION=20180108 \
@@ -16,8 +18,11 @@ RUN echo "Package: libxml2*" > /etc/apt/preferences.d/libxml2 && \
     echo "Pin: release o=Debian,n=buster" >> /etc/apt/preferences.d/libxml2 && \
     echo "Pin-Priority: 501" >> /etc/apt/preferences.d/libxml2
 
+RUN \
+### S6 Overlay
+    curl -sSL https://github.com/just-containers/s6-overlay/releases/download/${S6_OVERLAY_VERSION}/s6-overlay-armhf.tar.gz | tar xfz - --strip 0 -C /
 ### Install Dependencies
-RUN set -x && \
+    set -x && \
     curl https://packages.sury.org/php/apt.gpg | apt-key add - && \
     echo "deb https://packages.sury.org/php/ buster main" > /etc/apt/sources.list.d/deb.sury.org.list && \
     apt-get update  && \
@@ -76,6 +81,7 @@ RUN set -x && \
                     libsrtp2-1 \
                     locales \
                     locales-all \
+                    logrotate \
                     mariadb-client \
                     mariadb-server \
                     mpg123 \
@@ -190,9 +196,6 @@ RUN set -x && \
     mkdir -p /var/log/apache2 && \
     mkdir -p /var/log/httpd && \
     \
-### Zabbix Setup
-    echo '%zabbix ALL=(asterisk) NOPASSWD:/usr/sbin/asterisk' >> /etc/sudoers && \
-    \
 ### Setup for Data Persistence
     mkdir -p /assets/config/var/lib/ /assets/config/home/ && \
     mv /home/asterisk /assets/config/home/ && \
@@ -218,3 +221,5 @@ EXPOSE 80 443 4445 4569 5060/udp 5160/udp 5061 5161 8001 8003 8008 8009 18000-20
 
 ### Files Add
 ADD install /
+
+ENTRYPOINT ["/init"]
