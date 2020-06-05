@@ -33,8 +33,11 @@ RUN \
     ASTERISK_BUILD_DEPS='\
                         autoconf \
                         automake \
+                        bash \
                         bison \
                         build-essential \
+                        ca-certificates \
+                        curl \
                         doxygen \
                         flex \
                         libasound2-dev \
