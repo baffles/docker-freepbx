@@ -20,7 +20,11 @@ RUN echo "Package: libxml2*" > /etc/apt/preferences.d/libxml2 && \
 
 RUN \
 ### Base dependencies
-	apt-get install -y \
+	apt-get update && \
+	apt-get upgrade -y && \
+	apt-get install -y --no-install-recommends \
+		apt-transport-https \
+		aptitude \
 		bash \
         ca-certificates \
         curl \
