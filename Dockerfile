@@ -20,7 +20,7 @@ RUN echo "Package: libxml2*" > /etc/apt/preferences.d/libxml2 && \
 
 RUN \
 ### S6 Overlay
-    curl -sSL https://github.com/just-containers/s6-overlay/releases/download/${S6_OVERLAY_VERSION}/s6-overlay-armhf.tar.gz | tar xfz - --strip 0 -C /
+    curl -sSL https://github.com/just-containers/s6-overlay/releases/download/${S6_OVERLAY_VERSION}/s6-overlay-armhf.tar.gz | tar xfz - --strip 0 -C / && \
 ### Install Dependencies
     set -x && \
     curl https://packages.sury.org/php/apt.gpg | apt-key add - && \
