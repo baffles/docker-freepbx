@@ -70,7 +70,6 @@ RUN \
                         libtool-bin \
                         libvorbis-dev \
                         libxml2-dev \
-                        nodejs \
                         python-dev \
                         subversion \
                         unixodbc-dev \
@@ -99,6 +98,7 @@ RUN \
                     mariadb-client \
                     mariadb-server \
                     mpg123 \
+                    nodejs \
                     php5.6 \
                     php5.6-cli \
                     php5.6-curl \
