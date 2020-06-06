@@ -193,7 +193,6 @@ RUN \
     apt-get purge -y $ASTERISK_BUILD_DEPS libspandsp-dev && \
     apt-get -y autoremove && \
     apt-get clean && \
-    apt-get install -y make && \
     rm -rf /var/lib/apt/lists/* && \
     \
 ### FreePBX Hacks
