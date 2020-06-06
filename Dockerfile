@@ -35,7 +35,9 @@ RUN \
 ### Install Dependencies
     set -x && \
     curl https://packages.sury.org/php/apt.gpg | apt-key add - && \
+    curl https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - && \
     echo "deb https://packages.sury.org/php/ buster main" > /etc/apt/sources.list.d/deb.sury.org.list && \
+    echo "deb https://deb.nodesource.com/node_12.x buster main" > /etc/apt/sources.list.d/nodesource.list && \
     apt-get update  && \
     apt-get -o Dpkg::Options::="--force-confold" upgrade -y && \
     \
@@ -68,6 +70,7 @@ RUN \
                         libtool-bin \
                         libvorbis-dev \
                         libxml2-dev \
+                        nodejs \
                         python-dev \
                         subversion \
                         unixodbc-dev \
